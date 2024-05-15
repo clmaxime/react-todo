@@ -13,28 +13,32 @@ export default function Home() {
   const [task, setTask] = useState("");
 
   useEffect(() => {
-    todos.length > 0 && localStorage.setItem("todo", JSON.stringify(todos));
+    todos.length > 0 && localStorage.setItem("todo", JSON.stringify(todos))
   }, [todos]);
 
   function addTask(e) {
     e.preventDefault();
-    task != null ? setTodos([...todos, task]) : console.log("null");
+
+    if (task !== "") {
+      if (!todos.includes(task)) {
+          setTodos([...todos, task])
+      } else {
+        alert('task déjà ajoutée');
+      }
+    }
+    setTask("");
   }
 
-  function showTasks() {
-    return localStorage.getItem("todos");
-  }
-
-  // function showTasks() {
-  //   const storedTodos = localStorage.getItem("todo");
-  //   return storedTodos ? JSON.parse(storedTodos) : [];
-  // }
+  useEffect(() => {
+    const storedTodos = localStorage.getItem("todo");
+    setTodos(JSON.parse(storedTodos))
+  }, [])
 
   function deleteTask(index) {
     const newValue = todos.filter((e, i) => i !== index);
     localStorage.setItem("todo", JSON.stringify(newValue));
     setTodos(newValue);
-  }
+  }      
 
   return (
     <>
@@ -50,10 +54,11 @@ export default function Home() {
             <input
               type="text"
               id="task"
+              value={task}
               placeholder="Nouvelle tâche"
               onChange={(e) => setTask(e.target.value)}
-            ></input>
-            <button id="btn">Ajouter</button>
+            /  >
+            <button>Ajouter</button>
           </form>
           <table>
             <thead>
